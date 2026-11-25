@@ -16,14 +16,15 @@ class BiodataApiTest extends TestCase
     {
         $createResponse = $this->postJson('/api/biodata', [
             'name' => 'Rizki Eka Prasodjo',
-            'nim' => '12.11.5866',
+            'nim' => '24010110196',
             'description' => 'Mengembangkan frontend.',
         ]);
 
         $createResponse
             ->assertCreated()
+            ->assertJsonPath('message', 'Biodata berhasil ditambahkan.')
             ->assertJsonPath('data.name', 'Rizki Eka Prasodjo')
-            ->assertJsonPath('data.nim', '12.11.5866')
+            ->assertJsonPath('data.nim', '24010110196')
             ->assertJsonPath('data.photo_url', null);
 
         $biodata = Biodata::query()->firstOrFail();
@@ -38,7 +39,7 @@ class BiodataApiTest extends TestCase
 
         $this->putJson("/api/biodata/{$biodata->id}", [
             'name' => 'Rizki Prasodjo',
-            'nim' => '12.11.5866',
+            'nim' => '24010110196',
             'description' => 'Mengembangkan backend.',
         ])
             ->assertOk()
@@ -61,11 +62,18 @@ class BiodataApiTest extends TestCase
 
         Biodata::query()->create([
             'name' => 'Rizki Eka Prasodjo',
-            'nim' => '12.11.5866',
+            'nim' => '24010110196',
         ]);
 
         $this->postJson('/api/biodata', [
             'name' => 'Andi Agus Salim',
+            'nim' => '24010110196',
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['nim']);
+
+        $this->postJson('/api/biodata', [
+            'name' => 'Another Member',
             'nim' => '12.11.5866',
         ])
             ->assertUnprocessable()
@@ -78,7 +86,7 @@ class BiodataApiTest extends TestCase
 
         $response = $this->post('/api/biodata', [
             'name' => 'Rizki Eka Prasodjo',
-            'nim' => '12.11.5866',
+            'nim' => '24010110196',
             'photo' => UploadedFile::fake()->createWithContent(
                 'portrait.png',
                 base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADUlEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC')
@@ -89,11 +97,35 @@ class BiodataApiTest extends TestCase
 
         $biodata = Biodata::query()->firstOrFail();
         Storage::disk('public')->assertExists($biodata->photo);
-        $response->assertJsonPath('data.photo_url', Storage::disk('public')->url($biodata->photo));
+        $response->assertJsonPath('data.photo_url', url('/storage/'.$biodata->photo));
+
+        $this->post("/api/biodata/{$biodata->id}", [
+            '_method' => 'PUT',
+            'name' => 'Rizki Eka Prasodjo Updated',
+            'nim' => '24010110196',
+            'description' => 'Memperbarui profil tanpa mengganti foto.',
+        ], ['Accept' => 'application/json'])
+            ->assertOk()
+            ->assertJsonPath('data.name', 'Rizki Eka Prasodjo Updated');
+
+        $this->assertDatabaseHas('biodatas', [
+            'id' => $biodata->id,
+            'photo' => $biodata->photo,
+        ]);
+        Storage::disk('public')->assertExists($biodata->photo);
 
         $this->deleteJson("/api/biodata/{$biodata->id}")
             ->assertOk();
 
         Storage::disk('public')->assertMissing($biodata->photo);
+    }
+
+    public function test_api_allows_requests_from_the_local_frontend_server(): void
+    {
+        $this->getJson('/api/biodata', [
+            'Origin' => 'http://127.0.0.1:5500',
+        ])
+            ->assertOk()
+            ->assertHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
     }
 }

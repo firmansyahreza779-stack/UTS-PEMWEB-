@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 #[Fillable(['name', 'nim', 'description', 'photo'])]
 class Biodata extends Model
@@ -17,9 +16,7 @@ class Biodata extends Model
     protected function photoUrl(): Attribute
     {
         return Attribute::get(
-            fn (): ?string => $this->photo
-                ? Storage::disk('public')->url($this->photo)
-                : null
+            fn (): ?string => $this->photo ? url('/storage/'.$this->photo) : null
         );
     }
 }
