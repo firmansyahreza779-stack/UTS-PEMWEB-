@@ -56,3 +56,17 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Biodata API
+
+The biodata endpoints use JSON responses. Create and update requests can include an optional `photo` image (`jpg`, `jpeg`, `png`, or `webp`, up to 2 MB); use `multipart/form-data` for uploads. Uploaded image URLs are returned as `photo_url`. Run `php artisan storage:link` to make uploaded images publicly accessible.
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/biodata` | List biodata |
+| `POST` | `/api/biodata` | Create biodata |
+| `GET` | `/api/biodata/{id}` | Show one biodata |
+| `PUT` / `PATCH` | `/api/biodata/{id}` | Update biodata |
+| `DELETE` | `/api/biodata/{id}` | Delete biodata |
+
+Fields: `name` (required), `nim` (required and unique), `description` (optional), and `photo` (optional image upload).
