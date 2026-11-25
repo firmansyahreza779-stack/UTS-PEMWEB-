@@ -21,7 +21,7 @@ class BiodataSeederTest extends TestCase
         ]));
 
         $this->assertDatabaseHas('biodatas', [
-            'name' => "Muhammada Mi'raja Purnamastu",
+            'name' => 'Muhammada Miq Raja Purnamastu',
             'nim' => '24010110196',
             'description' => 'Anggota tim pengembang backend.',
             'photo' => 'biodata/muhammada-miraja.jpg',

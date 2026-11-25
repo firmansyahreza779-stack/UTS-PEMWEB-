@@ -69,4 +69,17 @@ The biodata endpoints use JSON responses. Create and update requests can include
 | `PUT` / `PATCH` | `/api/biodata/{id}` | Update biodata |
 | `DELETE` | `/api/biodata/{id}` | Delete biodata |
 
-Fields: `name` (required), `nim` (required and unique), `description` (optional), and `photo` (optional image upload).
+Fields: `name` (required), `nim` (required, unique, and exactly 11 digits), `description` (optional), and `photo` (optional image upload).
+
+### Running the frontend with the API
+
+From the repository root, start Laravel:
+
+```bash
+cd uts-laravel
+php artisan serve --host=127.0.0.1 --port=8000
+```
+
+Serve the repository-root `index.html` with VS Code Live Server on port `5500` (do not open it directly as a `file://` URL). The frontend sends requests to `http://127.0.0.1:8000/api/biodata`; CORS is limited to `localhost:5500` and `127.0.0.1:5500`. Update the `api-base-url` meta tag in `index.html` if the API uses a different address.
+
+The page loads biodata from the API and supports adding, editing, and deleting cards. Changes are saved through the JSON API, and uploaded images are served by Laravel's public storage disk.

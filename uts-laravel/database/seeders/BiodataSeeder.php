@@ -14,7 +14,7 @@ class BiodataSeeder extends Seeder
     {
         $biodatas = [
             [
-                'name' => "Muhammada Mi'raja Purnamastu",
+                'name' => 'Muhammada Miq Raja Purnamastu',
                 'nim' => '24010110196',
                 'description' => 'Anggota tim pengembang backend.',
                 'image' => 'muhammada-miraja.jpg',
