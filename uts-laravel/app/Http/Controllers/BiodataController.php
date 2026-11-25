@@ -3,111 +3,124 @@
 namespace App\Http\Controllers;
 
 use App\Models\Biodata;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class BiodataController extends Controller
 {
-    /**
-     * Menampilkan semua biodata anggota.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $biodatas = Biodata::latest()->get();
+        $biodatas = Biodata::query()->latest()->get();
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'data' => $biodatas,
+            ]);
+        }
+
         return view('biodata.index', compact('biodatas'));
     }
 
-    /**
-     * Form tambah biodata.
-     */
     public function create()
     {
         return view('biodata.create');
     }
 
-    /**
-     * Simpan biodata baru.
-     */
     public function store(Request $request)
     {
-        $request->validate([
-            'name'  => 'required|string|min:2|max:255',
-            'nim'   => 'required|digits:11',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'nim' => ['required', 'string', 'max:50', 'unique:biodatas,nim'],
+            'description' => ['nullable', 'string', 'max:5000'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        $photoName = null;
         if ($request->hasFile('photo')) {
-            $file      = $request->file('photo');
-            $photoName = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
-            $file->move(public_path('images'), $photoName);
+            $validated['photo'] = $request->file('photo')->store('biodata', 'public');
         }
 
-        Biodata::create([
-            'name'  => $request->name,
-            'nim'   => $request->nim,
-            'photo' => $photoName,
-        ]);
+        $biodata = Biodata::query()->create($validated);
 
-        return redirect()
-            ->route('biodata.index')
-            ->with('success', 'Biodata berhasil ditambahkan.');
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'message' => 'Biodata berhasil ditambahkan.',
+                'data' => $biodata,
+            ], 201);
+        }
+
+        return redirect()->route('biodata.index')->with('success', 'Biodata berhasil ditambahkan.');
     }
 
-    /**
-     * Form edit biodata.
-     */
+    public function show(Request $request, Biodata $biodata)
+    {
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'data' => $biodata,
+            ]);
+        }
+
+        return view('biodata.show', compact('biodata'));
+    }
+
     public function edit(Biodata $biodata)
     {
         return view('biodata.edit', compact('biodata'));
     }
 
-    /**
-     * Perbarui biodata yang dipilih.
-     */
     public function update(Request $request, Biodata $biodata)
     {
-        $request->validate([
-            'name'  => 'required|string|min:2|max:255',
-            'nim'   => 'required|digits:11',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        $validated = $request->validate([
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'nim' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('biodatas', 'nim')->ignore($biodata->id),
+            ],
+            'description' => ['sometimes', 'nullable', 'string', 'max:5000'],
+            'photo' => ['sometimes', 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
-        $photoName = $biodata->photo; // pertahankan foto lama
+        $oldPhoto = $biodata->photo;
 
         if ($request->hasFile('photo')) {
-            // Hapus foto lama
-            if ($biodata->photo && file_exists(public_path('images/' . $biodata->photo))) {
-                unlink(public_path('images/' . $biodata->photo));
-            }
-            $file      = $request->file('photo');
-            $photoName = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
-            $file->move(public_path('images'), $photoName);
+            $validated['photo'] = $request->file('photo')->store('biodata', 'public');
         }
 
-        $biodata->update([
-            'name'  => $request->name,
-            'nim'   => $request->nim,
-            'photo' => $photoName,
-        ]);
+        $biodata->update($validated);
 
-        return redirect()
-            ->route('biodata.index')
-            ->with('success', 'Biodata berhasil diperbarui.');
+        if ($oldPhoto && array_key_exists('photo', $validated)) {
+            Storage::disk('public')->delete($oldPhoto);
+        }
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'message' => 'Biodata berhasil diperbarui.',
+                'data' => $biodata->refresh(),
+            ]);
+        }
+
+        return redirect()->route('biodata.index')->with('success', 'Biodata berhasil diperbarui.');
     }
 
-    /**
-     * Hapus biodata yang dipilih.
-     */
-    public function destroy(Biodata $biodata)
+    public function destroy(Request $request, Biodata $biodata)
     {
-        if ($biodata->photo && file_exists(public_path('images/' . $biodata->photo))) {
-            unlink(public_path('images/' . $biodata->photo));
-        }
-
+        $photo = $biodata->photo;
         $biodata->delete();
 
-        return redirect()
-            ->route('biodata.index')
-            ->with('success', 'Biodata berhasil dihapus.');
+        if ($photo) {
+            Storage::disk('public')->delete($photo);
+        }
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'message' => 'Biodata berhasil dihapus.',
+            ]);
+        }
+
+        return redirect()->route('biodata.index')->with('success', 'Biodata berhasil dihapus.');
     }
 }
