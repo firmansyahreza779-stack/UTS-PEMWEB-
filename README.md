@@ -7,6 +7,8 @@ Aplikasi biodata (CRUD) dengan **Frontend** (HTML, CSS, JavaScript) dan **Backen
 * **Frontend:** Reza Ardiansyah (NIM: 24010110173)
 * **Backend:** Muhammada Miq Raja Purnamastu (NIM: 24010110196)
 
+http://127.0.0.1:8000/
+
 ## Struktur
 
 ```text
