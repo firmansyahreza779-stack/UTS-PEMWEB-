@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Biodata;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use RuntimeException;
 
 class BiodataController extends Controller
 {
     public function index(Request $request)
     {
+<<<<<<< HEAD
         $biodatas = Biodata::query()->latest()->get();
 
         if ($request->wantsJson() || $request->is('api/*')) {
@@ -21,6 +24,11 @@ class BiodataController extends Controller
         }
 
         return view('biodata.index', compact('biodatas'));
+=======
+        return response()->json([
+            'data' => Biodata::query()->orderBy('id')->get(),
+        ]);
+>>>>>>> 1eaada43ccb31ff9e5ed86e6908c77545682c342
     }
 
     public function create()
@@ -32,13 +40,13 @@ class BiodataController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'nim' => ['required', 'string', 'max:50', 'unique:biodatas,nim'],
+            'nim' => ['required', 'string', 'digits:11', 'unique:biodatas,nim'],
             'description' => ['nullable', 'string', 'max:5000'],
             'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('biodata', 'public');
+            $validated['photo'] = $this->storePhoto($request->file('photo'));
         }
 
         $biodata = Biodata::query()->create($validated);
@@ -77,7 +85,7 @@ class BiodataController extends Controller
                 'sometimes',
                 'required',
                 'string',
-                'max:50',
+                'digits:11',
                 Rule::unique('biodatas', 'nim')->ignore($biodata->id),
             ],
             'description' => ['sometimes', 'nullable', 'string', 'max:5000'],
@@ -85,14 +93,16 @@ class BiodataController extends Controller
         ]);
 
         $oldPhoto = $biodata->photo;
+        $newPhoto = null;
 
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('biodata', 'public');
+            $newPhoto = $this->storePhoto($request->file('photo'));
+            $validated['photo'] = $newPhoto;
         }
 
         $biodata->update($validated);
 
-        if ($oldPhoto && array_key_exists('photo', $validated)) {
+        if ($oldPhoto && $newPhoto) {
             Storage::disk('public')->delete($oldPhoto);
         }
 
@@ -122,5 +132,16 @@ class BiodataController extends Controller
         }
 
         return redirect()->route('biodata.index')->with('success', 'Biodata berhasil dihapus.');
+    }
+
+    private function storePhoto(UploadedFile $photo): string
+    {
+        $path = $photo->store('biodata', 'public');
+
+        if ($path === false) {
+            throw new RuntimeException('Foto biodata gagal disimpan.');
+        }
+
+        return $path;
     }
 }
