@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,14 +15,17 @@
       background-color: #fbfbfb;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
+
     .navbar-brand {
       font-size: 1.05rem;
       font-weight: 600;
     }
+
     .nav-link {
       font-size: 0.88rem;
       color: #555 !important;
     }
+
     .card-member {
       border: 1px solid #e5e7eb;
       border-radius: 8px;
@@ -29,9 +33,11 @@
       min-height: 480px;
       transition: box-shadow 0.2s ease-in-out;
     }
+
     .card-member:hover {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
+
     .member-img {
       width: 100%;
       height: 280px;
@@ -39,6 +45,7 @@
       border-top-left-radius: 7px;
       border-top-right-radius: 7px;
     }
+
     .btn-add-circle {
       width: 76px;
       height: 76px;
@@ -54,11 +61,13 @@
       box-shadow: 0 2px 8px rgba(92, 184, 92, 0.3);
       transition: transform 0.15s, background-color 0.15s;
     }
+
     .btn-add-circle:hover {
       background-color: #4cae4c;
       transform: scale(1.05);
       color: #ffffff;
     }
+
     .btn-outline-custom-edit {
       border: 1px solid #0d6efd;
       color: #0d6efd;
@@ -67,10 +76,12 @@
       font-size: 0.82rem;
       border-radius: 4px;
     }
+
     .btn-outline-custom-edit:hover {
       background: #0d6efd;
       color: #fff;
     }
+
     .btn-outline-custom-hapus {
       border: 1px solid #dc3545;
       color: #dc3545;
@@ -79,23 +90,28 @@
       font-size: 0.82rem;
       border-radius: 4px;
     }
+
     .btn-outline-custom-hapus:hover {
       background: #dc3545;
       color: #fff;
     }
+
     .footer-link {
       color: #6c757d;
       text-decoration: none;
       font-size: 0.85rem;
       margin: 0 8px;
     }
+
     .footer-link:hover {
       color: #212529;
     }
+
     .footer-copy {
       font-size: 0.8rem;
       color: #6c757d;
     }
+
     .alert-custom {
       background-color: #d1e7dd;
       color: #0f5132;
@@ -105,6 +121,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- ================= HEADER / NAVBAR ================= -->
@@ -123,10 +140,10 @@
             <a class="nav-link text-secondary px-2" href="#">Features</a>
           </li>
           <li class="nav-item">
-            <span class="nav-link text-secondary px-2" id="navbarNama">(Masukkan Nama)</span>
+            <span class="nav-link text-secondary px-2" id="navbarNama">(Reza ardiansyah)</span>
           </li>
           <li class="nav-item">
-            <span class="nav-link text-secondary px-2" id="navbarNim">(Masukkan NIM)</span>
+            <span class="nav-link text-secondary px-2" id="navbarNim">(24010110173)</span>
           </li>
         </ul>
       </div>
@@ -138,9 +155,12 @@
 
     <!-- Alert Notifikasi Sesuai Gambar Referensi -->
     <div id="alertContainer" class="mb-4">
-      <div class="alert alert-custom alert-dismissible fade show d-flex align-items-center justify-content-between py-2 px-3" role="alert" id="defaultAlert">
+      <div
+        class="alert alert-custom alert-dismissible fade show d-flex align-items-center justify-content-between py-2 px-3"
+        role="alert" id="defaultAlert">
         <span id="alertMessage">Biodata berhasil diperbarui.</span>
-        <button type="button" class="btn-close shadow-none p-2" data-bs-dismiss="alert" aria-label="Close" style="font-size: 0.75rem;"></button>
+        <button type="button" class="btn-close shadow-none p-2" data-bs-dismiss="alert" aria-label="Close"
+          style="font-size: 0.75rem;"></button>
       </div>
     </div>
 
@@ -160,7 +180,8 @@
       </div>
       <hr class="my-3 text-muted" style="opacity: 0.15;" />
       <p class="footer-copy mb-0" id="footerText">
-        &copy; 2025 Dibuat Sejujurnya Oleh Team <span id="footerKetua">(Masukkan Nama ketua)</span> dan <span id="footerAnggota">(Masukkan Nama Anggota)</span> Tanpa Mencotek dari Tim Lain
+        &copy; 2025 Dibuat Sejujurnya Oleh Team <span id="footerKetua">(Reza Ardiansyah)</span> dan <span
+          id="footerAnggota">(Muhammada Mi' raja Purnamastu)</span>
       </p>
     </footer>
   </main>
@@ -178,18 +199,20 @@
             <input type="hidden" id="memberId">
 
             <div class="mb-3">
-              <label for="memberName" class="form-label small fw-semibold">Nama Lengkap</label>
-              <input type="text" class="form-control" id="memberName" placeholder="Contoh: rizki eka prasodjo" required minlength="2">
+              <label for="memberName" class="form-label small fw-semibold">Muhammada Mi' Raja Purnamastu</label>
+              <input type="text" class="form-control" id="memberName" placeholder="Contoh: rizki eka prasodjo" required
+                minlength="2">
             </div>
 
             <div class="mb-3">
-              <label for="memberNim" class="form-label small fw-semibold">NIM</label>
+              <label for="memberNim" class="form-label small fw-semibold">24010110196</label>
               <input type="text" class="form-control" id="memberNim" placeholder="Contoh: 12.11.5866" required>
             </div>
 
             <div class="mb-3">
-              <label for="memberRole" class="form-label small fw-semibold">Tugas / Peran</label>
-              <textarea class="form-control" id="memberRole" rows="2" placeholder="Contoh: merupakan master dari uts ini dengan tugas membuat front-end dan mengirimkannya ke grup"></textarea>
+              <label for="memberRole" class="form-label small fw-semibold">Back-End (Coraboration)</label>
+              <textarea class="form-control" id="memberRole" rows="2"
+                placeholder="Contoh: merupakan master dari uts ini dengan tugas membuat front-end dan mengirimkannya ke grup"></textarea>
             </div>
 
             <div class="mb-3">
@@ -214,4 +237,5 @@
   <!-- Script Aplikasi -->
   <script src="app.js"></script>
 </body>
+
 </html>
