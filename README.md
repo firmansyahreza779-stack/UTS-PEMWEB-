@@ -1,6 +1,27 @@
-Project Laravel untuk UTS Pemrograman Web.
-Identitas Tim
+# UTS Pemrograman Web
 
+Aplikasi biodata (CRUD) dengan **Frontend** (HTML, CSS, JavaScript) dan **Backend** (Laravel, REST API, Database).
 
--Reza Ardiansyah (24010110173) front-end 
--Muhammada Miq Raja Purnamastu (24010110196) back-end
+## Tim Pengembang
+
+* **Frontend:** Reza Ardiansyah (NIM: 24010110173)
+* **Backend:** Muhammada Miq Raja Purnamastu (NIM: 24010110196)
+
+## Struktur
+
+```text
+UTS-PEMWEB-/
+├── uts-laravel/
+│   ├── app/
+│   ├── config/
+│   ├── database/
+│   ├── public/
+│   ├── resources/
+│   │   └── views/
+│   └── routes/
+│       ├── api.php
+│       └── web.php
+├── index.html
+├── styles.css
+├── app.js
+└── README.md
