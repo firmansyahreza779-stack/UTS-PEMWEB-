@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Data Mahasiswa</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Form Data Mahasiswa</h1>
+  </header>
+  <main>
+    <form id="studentForm" enctype="multipart/form-data">
+      <div class="field">
+        <label for="name">Nama</label>
+        <input type="text" id="name" name="name" required minlength="2" />
+      </div>
+      <div class="field">
+        <label for="nim">NIM</label>
+        <input type="text" id="nim" name="nim" required pattern="\d{11}" title="11 digit angka" />
+      </div>
+      <div class="field">
+        <label for="photo">Foto</label>
+        <input type="file" id="photo" name="photo" accept="image/*" required />
+        <div id="photoPreview" class="preview"></div>
+      </div>
+      <button type="submit">Kirim</button>
+    </form>
+    <div id="result" class="result hidden">
+      <p id="commitTime"></p>
+      <p id="responseMsg"></p>
+    </div>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
